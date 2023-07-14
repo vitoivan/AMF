@@ -30,7 +30,7 @@ const Credentials = () => {
 				<input
 					type="text"
 					onChange={(e) =>
-						onChangeCrentials({ authDomain: e.target.value })
+						onChangeCrentials({ authDomain: e.target.value, projectId: e.target.value?.split('.')[0] })
 					}
 					value={credentials.authDomain || ""}
 				/>

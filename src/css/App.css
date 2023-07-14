@@ -29,6 +29,7 @@ button {
 	align-items: center;
 	gap: .5rem;
 	font-size: 1.3rem;
+	margin-bottom: 0.5rem;
 }
 
 button:focus {

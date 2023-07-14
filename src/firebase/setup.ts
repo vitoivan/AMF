@@ -12,10 +12,10 @@ export class FirebaseClient {
 
 	static init(credentials: FirebaseOptions, tenantId?: string) {
 		FirebaseClient.credentials = credentials;
-		FirebaseClient.app = initializeApp(credentials);
+		FirebaseClient.app = initializeApp(credentials, credentials.projectId);
 		console.log(FirebaseClient.app);
 		FirebaseClient.auth = getAuth(FirebaseClient.app);
-		FirebaseClient.setTenant(tenantId);
+		tenantId && FirebaseClient.setTenant(tenantId);
 	}
 
 	static getApp() {
