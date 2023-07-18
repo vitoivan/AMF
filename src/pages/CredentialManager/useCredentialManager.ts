@@ -39,9 +39,16 @@ export type Credentials = {
 };
 
 export function useCredentialManager() {
+	const initialCredAsObj = {
+		apple: [],
+		facebook: [],
+		firebase: [],
+		google: [],
+	};
+
 	const initialCred = JSON.parse(
 		localStorage.getItem("@cred-manager") ||
-			"{ apple: [], facebook: [], firebase: [], google: [] }"
+			JSON.stringify(initialCredAsObj)
 	) as Credentials;
 	const [credentials, setCredentials] = useState<Credentials>(initialCred);
 
