@@ -1,16 +1,37 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import { FirebaseOptions } from "firebase/app";
-import { ReactNode, createContext, useContext, useState } from "react";
+import {
+	ReactNode,
+	createContext,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
+import {
+	AppleCredentials,
+	Credentials,
+	FacebookCredentials,
+	FirebaseCredentials,
+	GoogleCredentials,
+	useCredentialManager,
+} from "../pages/CredentialManager/useCredentialManager";
+
+export type CurrentCredential =
+	| FacebookCredentials
+	| GoogleCredentials
+	| FirebaseCredentials;
 
 export type GlobalContext = {
-	credentials: FirebaseOptions;
-	onChangeCrentials(data: Partial<FirebaseOptions>): void;
-	tenantId?: string;
-	setTenantId(tenantId: string): void;
-	endpoint?: string;
-	setEndpoint(tenantId: string): void;
-	saveContext(): void;
-	resetContext(): void;
+	globalCredentials: Credentials;
+
+	addFacebookCredential(credential: Omit<FacebookCredentials, "id">): void;
+	addGoogleCredential(credential: Omit<GoogleCredentials, "id">): void;
+	addAppleCredential(credential: AppleCredentials): void;
+	addFirebaseCredential(credential: Omit<FirebaseCredentials, "id">): void;
+	deleteCredential(provider: keyof Credentials, id: string): void;
+	resetCredentials(): void;
+	currentCredential?: CurrentCredential;
+	setCurrentCredential: (newCred: CurrentCredential) => void;
+	importCredentials: (creds: string) => void;
 };
 
 const ctx = createContext<GlobalContext>({} as GlobalContext);
@@ -19,58 +40,36 @@ type Props = {
 	children: ReactNode;
 };
 
-export const Provider = ({ children }: Props) => {
-	const initialCredentials = localStorage.getItem("credentials")
-		? (JSON.parse(
-				localStorage.getItem("credentials") as string
-		  ) as FirebaseOptions)
-		: ({} as FirebaseOptions);
+export const GlobalContextProvider = ({ children }: Props) => {
+	const {
+		credentials: globalCredentials,
+		addFacebookCredential,
+		addFirebaseCredential,
+		addGoogleCredential,
+		resetCredentials,
+		addAppleCredential,
+		deleteCred,
 
-	const initialTenantId = localStorage.getItem("tenantId")
-		? (localStorage.getItem("tenantId") as string)
-		: undefined;
-	const initialEndpoint = localStorage.getItem("endpoint")
-		? (localStorage.getItem("endpoint") as string)
-		: undefined;
+		importCredentials,
+	} = useCredentialManager();
 
-	const [credentials, setCredentials] =
-		useState<FirebaseOptions>(initialCredentials);
-
-	const [tenantId, setTenantId] = useState<string | undefined>(
-		initialTenantId
-	);
-	const [endpoint, setEndpoint] = useState<string>(initialEndpoint || "");
-
-	const onChangeCrentials = (data: Partial<FirebaseOptions>) => {
-		setCredentials({ ...credentials, ...data });
-	};
-
-	const saveContext = () => {
-		localStorage.setItem("tenantId", tenantId || "");
-		localStorage.setItem("endpoint", endpoint);
-		localStorage.setItem("credentials", JSON.stringify(credentials));
-	};
-
-	const resetContext = () => {
-		setTenantId("");
-		setEndpoint("");
-		setCredentials({} as FirebaseOptions);
-		localStorage.removeItem("tenantId");
-		localStorage.removeItem("endpoint");
-		localStorage.removeItem("credentials");
-	};
+	const [currentCred, setCurrentCred] = useState<
+		CurrentCredential | undefined
+	>();
 
 	return (
 		<ctx.Provider
 			value={{
-				credentials,
-				onChangeCrentials,
-				saveContext,
-				setTenantId,
-				tenantId,
-				endpoint,
-				setEndpoint,
-				resetContext,
+				currentCredential: currentCred,
+				setCurrentCredential: setCurrentCred,
+				globalCredentials,
+				addAppleCredential,
+				addFacebookCredential,
+				deleteCredential: deleteCred,
+				addFirebaseCredential,
+				resetCredentials,
+				addGoogleCredential,
+				importCredentials,
 			}}
 		>
 			{children}
