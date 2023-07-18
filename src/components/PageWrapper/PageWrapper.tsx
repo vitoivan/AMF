@@ -146,8 +146,11 @@ function Header() {
 	}, [path, globalCredentials]);
 
 	useEffect(() => {
-		if (!availableCreds.length) setCurrentCredential(undefined);
-		else setCurrentCredential(availableCreds[0] as CurrentCredential);
+		if (!availableCreds.length) {
+			setCurrentCredential(undefined);
+		} else {
+			setCurrentCredential(availableCreds[0] as CurrentCredential);
+		}
 	}, [availableCreds, setCurrentCredential]);
 
 	function setCredential(credAsJSON: string) {

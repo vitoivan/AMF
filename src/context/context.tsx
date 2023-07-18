@@ -1,11 +1,5 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import {
-	ReactNode,
-	createContext,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
 import {
 	AppleCredentials,
 	Credentials,
@@ -30,8 +24,13 @@ export type GlobalContext = {
 	deleteCredential(provider: keyof Credentials, id: string): void;
 	resetCredentials(): void;
 	currentCredential?: CurrentCredential;
-	setCurrentCredential: (newCred: CurrentCredential) => void;
+	setCurrentCredential: (newCred?: CurrentCredential) => void;
 	importCredentials: (creds: string) => void;
+	editCredential: (
+		provider: keyof Credentials,
+		id: string,
+		cred: any
+	) => void;
 };
 
 const ctx = createContext<GlobalContext>({} as GlobalContext);
@@ -49,8 +48,8 @@ export const GlobalContextProvider = ({ children }: Props) => {
 		resetCredentials,
 		addAppleCredential,
 		deleteCred,
-
 		importCredentials,
+		editCredential,
 	} = useCredentialManager();
 
 	const [currentCred, setCurrentCred] = useState<
@@ -70,6 +69,7 @@ export const GlobalContextProvider = ({ children }: Props) => {
 				resetCredentials,
 				addGoogleCredential,
 				importCredentials,
+				editCredential,
 			}}
 		>
 			{children}
@@ -77,4 +77,5 @@ export const GlobalContextProvider = ({ children }: Props) => {
 	);
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useGlobalContext = () => useContext(ctx);

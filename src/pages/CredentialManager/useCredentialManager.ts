@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
@@ -163,6 +164,92 @@ export function useCredentialManager() {
 		return JSON.stringify(credentials, null, 2);
 	}
 
+	function editCredential(
+		provider: keyof Credentials,
+		id: string,
+		credential: any
+	) {
+		if (!credentials[provider]) {
+			console.error(`No credentials for provider ${provider}`);
+			return;
+		}
+
+		if (provider === "apple") {
+			const newCred = credential;
+			const appleCreds = credentials.apple.map((cred) =>
+				cred.id === id
+					? { ...newCred, ...credential, id: cred.id }
+					: cred
+			);
+			setCredentials({
+				...credentials,
+				apple: appleCreds,
+			});
+			return;
+		}
+		if (provider === "facebook") {
+			const newCred = credential as FacebookCredentials;
+			if (!newCred.appId) {
+				console.error("No appId");
+				return;
+			}
+
+			const facebookCreds = credentials.facebook.map((cred) =>
+				cred.id === id
+					? { ...newCred, ...credential, id: cred.id }
+					: cred
+			);
+			setCredentials({
+				...credentials,
+				facebook: facebookCreds,
+			});
+			return;
+		}
+
+		if (provider === "firebase") {
+			const newCred = credential as FirebaseCredentials;
+			if (!newCred.apiKey) {
+				console.error("No apiKey");
+				return;
+			}
+
+			if (!newCred.authDomain) {
+				console.error("No authDomain");
+				return;
+			}
+
+			const firebaseCreds = credentials.firebase.map((cred) =>
+				cred.id === id
+					? { ...newCred, ...credential, id: cred.id }
+					: cred
+			);
+			setCredentials({
+				...credentials,
+				firebase: firebaseCreds,
+			});
+			return;
+		}
+
+		if (provider === "google") {
+			const newCred = credential as GoogleCredentials;
+			if (!newCred.clientId) {
+				console.error("No clientId");
+				return;
+			}
+
+			const googleCreds = credentials.google.map((cred) =>
+				cred.id === id
+					? { ...newCred, ...credential, id: cred.id }
+					: cred
+			);
+			setCredentials({
+				...credentials,
+				google: googleCreds,
+			});
+			return;
+		}
+	}
+
 	return {
 		credentials,
 		resetCredentials: reset,
@@ -173,5 +260,6 @@ export function useCredentialManager() {
 		addGoogleCredential,
 		importCredentials,
 		exportCredentials,
+		editCredential,
 	};
 }
