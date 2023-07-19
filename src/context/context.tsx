@@ -19,7 +19,7 @@ export type GlobalContext = {
 
 	addFacebookCredential(credential: Omit<FacebookCredentials, "id">): void;
 	addGoogleCredential(credential: Omit<GoogleCredentials, "id">): void;
-	addAppleCredential(credential: AppleCredentials): void;
+	addAppleCredential(credential: Omit<AppleCredentials, "id">): void;
 	addFirebaseCredential(credential: Omit<FirebaseCredentials, "id">): void;
 	deleteCredential(provider: keyof Credentials, id: string): void;
 	resetCredentials(): void;

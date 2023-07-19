@@ -29,17 +29,23 @@ export type GoogleCredentials = {
 	clientId: string;
 };
 
-export type AppleCredentials = any;
+export type AppleCredentials = {
+	id: string;
+	name: string;
+	clientId: string;
+	scopes: string
+	redirectURL: string
+}
 
 export type Credentials = {
+	apple: AppleCredentials[];
 	facebook: FacebookCredentials[];
 	google: GoogleCredentials[];
 	firebase: FirebaseCredentials[];
-	apple: AppleCredentials[];
 };
 
 export function useCredentialManager() {
-	const initialCredAsObj = {
+	const initialCredAsObj: Credentials = {
 		apple: [],
 		facebook: [],
 		firebase: [],
@@ -74,7 +80,7 @@ export function useCredentialManager() {
 		});
 	}
 
-	function addAppleCredential(credential: AppleCredentials): void {
+	function addAppleCredential(credential: Omit<AppleCredentials, "id">): void {
 		setCredentials({
 			...credentials,
 			apple: [...credentials.apple, { ...credential, id: uuid() }],
@@ -88,9 +94,11 @@ export function useCredentialManager() {
 		});
 	}
 
+
 	function deleteCred(provider: keyof Credentials, id: string) {
 		setCredentials({
 			...credentials,
+			//@ts-ignore
 			[provider]: credentials[provider].filter((cred) => cred.id !== id),
 		});
 	}

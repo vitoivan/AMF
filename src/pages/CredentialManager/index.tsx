@@ -23,6 +23,7 @@ import { useState } from "react";
 import { FacebookCredTab } from "./FacebookTab";
 import { FirebaseCredTab } from "./FirebaseTab";
 import { GoogleCredTab } from "./GoogleTab";
+import { AppleCredTab } from "./AppleTab";
 
 function Title() {
 	return (
@@ -139,11 +140,13 @@ function CredManager() {
 
 			<Tabs variant="enclosed">
 				<TabList>
+					<Tab>Apple</Tab>
 					<Tab>Facebook</Tab>
 					<Tab>Google</Tab>
 					<Tab>Firebase</Tab>
 				</TabList>
 				<TabPanels>
+					<AppleCredTab />
 					<FacebookCredTab />
 					<GoogleCredTab />
 					<FirebaseCredTab />
