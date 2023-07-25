@@ -9,6 +9,7 @@ export class AppleSDK {
   // Generate a new random string for each sign-in
   static generateNonce = async (length: number) => {
     const rand = Math.random().toString(16).substring(2, length);
+    console.log(`rawNonce: ${rand}`)
     const utf8 = new TextEncoder().encode(rand);
     const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -29,19 +30,6 @@ export class AppleSDK {
     //@ts-ignore
     await AppleID.auth.init({ clientId, scope, redirectURI, nonce, usePopup });
 
-  //   // Listen for authorization success.
-  //   document.addEventListener("AppleIDSignInOnSuccess", (event) => {
-  //     // Handle successful response.
-  //     //@ts-ignore
-  //     console.log(event.detail.data);
-  //   });
-
-  //   // Listen for authorization failures.
-  //   document.addEventListener("AppleIDSignInOnFailure", (event) => {
-  //     // Handle error.
-  //     //@ts-ignore
-  //     console.log(event.detail.error);
-  //   });
   }
 
   static async login(): Promise<any> {
@@ -49,7 +37,7 @@ export class AppleSDK {
       //@ts-ignore
       const data = await AppleID.auth.signIn();
 
-      console.log({ data });
+      console.log(data);
       return data;
     } catch (error) {
       console.log({ error });
