@@ -1,0 +1,20 @@
+version: "3.9"
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - 443:443
+    volumes:
+      - ./certs/:/etc/nginx/ssl
+      - ./conf/:/etc/nginx/conf.d
+  server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    command: "yarn start --host"
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: development
